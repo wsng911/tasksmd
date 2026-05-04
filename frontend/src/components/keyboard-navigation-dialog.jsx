@@ -12,7 +12,7 @@ export function KeyboardNavigationDialog(props) {
               <button
                 type="button"
                 class="dialog__toolbar-btn help-dialog__close-btn"
-                onClick={() => props.onClose()}
+                onClick={() => props.on关闭()}
                 title={props.t()('common.close')}
               >
                 <span innerHTML={IconClear} />
@@ -77,7 +77,7 @@ export function KeyboardNavigationDialog(props) {
               </div>
 
               <div class="help-dialog__section">
-                <h3 class="help-dialog__section-title">{props.t()('keyboard.sections.cardActions')}</h3>
+                <h3 class="help-dialog__section-title">{props.t()('keyboard.sections.card操作')}</h3>
                 <table class="help-dialog__table">
                   <tbody>
                     <tr>
@@ -89,7 +89,7 @@ export function KeyboardNavigationDialog(props) {
                     <tr>
                       <td class="help-dialog__key-cell">n</td>
                       <td class="help-dialog__desc-cell">
-                        Create new card in current lane
+                        创建 new card in current lane
                       </td>
                     </tr>
                     <tr>
@@ -101,7 +101,7 @@ export function KeyboardNavigationDialog(props) {
                     <tr>
                       <td class="help-dialog__key-cell">d</td>
                       <td class="help-dialog__desc-cell">
-                        Delete focused card (with confirmation)
+                        删除 focused card (with confirmation)
                       </td>
                     </tr>
                   </tbody>
@@ -115,7 +115,7 @@ export function KeyboardNavigationDialog(props) {
                     <tr>
                       <td class="help-dialog__key-cell">Esc</td>
                       <td class="help-dialog__desc-cell">
-                        Clear focus / Close dialog
+                        Clear focus / 关闭 dialog
                       </td>
                     </tr>
                     <tr>

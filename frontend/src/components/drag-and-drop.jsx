@@ -73,7 +73,7 @@ function Target() {
     if (dragAndDropTarget().originalElement && prev) {
       return prev;
     }
-    const target = dragAndDropTarget().originalElement.cloneNode(true);
+    const target = dragAndDropTarget().originalElement.clone否de(true);
     const targetComputedStyle = window.getComputedStyle(
       dragAndDropTarget().originalElement
     );
@@ -163,7 +163,7 @@ function Container(props) {
   const [targetBeforeMoving, setTargetBeforeMoving] = createSignal(null);
 
   function handlePointerDown(e, currentTarget) {
-    if (e.target.tagName === "INPUT") {
+    if (e.target.tag名称 === "INPUT") {
       return;
     }
     e.preventDefault();
@@ -187,7 +187,7 @@ function Container(props) {
       group: props.group,
     });
     setStartPageCoordinates({ x: pageX, y: pageY });
-    const newPositions = calculateNewPositions();
+    const newPositions = calculate新建Positions();
     setPositions(newPositions);
   }
 
@@ -266,7 +266,7 @@ function Container(props) {
       return;
     }
     if (sortedItemsIds.length > items().length) {
-      const newItem = dragAndDropTarget().originalElement.cloneNode(true);
+      const newItem = dragAndDropTarget().originalElement.clone否de(true);
       newItem.style.opacity = "0";
       newItem.style["z-index"] = "0";
       items().push(newItem);
@@ -274,17 +274,17 @@ function Container(props) {
     for (let itemIndex = 0; itemIndex < items().length; itemIndex += 1) {
       const item = items()[itemIndex];
       const sortedItemIndex = sortedItemsIds.findIndex((id) => id === item.id);
-      let translateToNewPosition = (sortedItemIndex - itemIndex) * itemLength;
+      let translateTo新建Position = (sortedItemIndex - itemIndex) * itemLength;
       if (sortedItemIndex < itemIndex) {
-        translateToNewPosition -= gap();
+        translateTo新建Position -= gap();
       }
       if (sortedItemIndex > itemIndex) {
-        translateToNewPosition += gap();
+        translateTo新建Position += gap();
       }
       if (flexDirection() === "row") {
-        item.style.translate = `${translateToNewPosition}px 0`;
+        item.style.translate = `${translateTo新建Position}px 0`;
       } else {
-        item.style.translate = `0 ${translateToNewPosition}px`;
+        item.style.translate = `0 ${translateTo新建Position}px`;
       }
       if (item.id === dragAndDropTarget().originalElement?.id) {
         item.style.opacity = "0";
@@ -292,7 +292,7 @@ function Container(props) {
     }
   }
 
-  function calculateNewPositions() {
+  function calculate新建Positions() {
     const containerStartPadding =
       window.getComputedStyle(containerRef)[paddingProperty()];
     const containerStartPaddingIntValue = Number(
@@ -321,7 +321,7 @@ function Container(props) {
     if (!sortedItemsIds.length) {
       return;
     }
-    const newPositions = calculateNewPositions();
+    const newPositions = calculate新建Positions();
     setPositions(newPositions);
   })
 

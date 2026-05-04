@@ -19,7 +19,7 @@ import { handleKeyDown } from "../utils";
  */
 export function Card(props) {
 
-  const dueDateStatusClass = createMemo(() => {
+  const dueDate状态Class = createMemo(() => {
     if (!props.dueDate) {
       return '';
     }
@@ -103,7 +103,7 @@ export function Card(props) {
         </For>
       </ul>
       <h5 class="card__content">{props.content}</h5>
-      <h5 class={`card__due-date ${dueDateStatusClass()}`}>{dueDateFormatted()}</h5>
+      <h5 class={`card__due-date ${dueDate状态Class()}`}>{dueDateFormatted()}</h5>
     </div>
   );
 }

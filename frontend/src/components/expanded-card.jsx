@@ -9,12 +9,12 @@ import { api } from "../api";
 import { Menu } from "./menu";
 import { handleKeyDown, clickOutside } from "../utils";
 import { makePersisted } from "@solid-primitives/storage";
-import { NameInput } from "./name-input";
+import { 名称Input } from "./name-input";
 import { Portal } from "solid-js/web";
-import { StacksEditor } from "./Stacks-Editor/src/stacks-editor/editor";
-import { IconClear, IconScreenFull, IconScreenNormal } from "@stackoverflow/stacks-icons/icons";
+import { Stacks编辑or } from "./Stacks-编辑or/src/stacks-editor/editor";
+import { IconClear, IconScreenFull, IconScreen否rmal } from "@stackoverflow/stacks-icons/icons";
 import stacksStyle from "@stackoverflow/stacks/dist/css/stacks.css?inline";
-import stacksEditorStyle from "./Stacks-Editor/src/styles/index.css?inline";
+import stacks编辑orStyle from "./Stacks-编辑or/src/styles/index.css?inline";
 import { addTagToContent, removeTagFromContent, setDueDateInContent, getDueDateFromContent } from "../card-content-utils";
 
 /**
@@ -25,21 +25,21 @@ import { addTagToContent, removeTagFromContent, setDueDateInContent, getDueDateF
  * @param {boolean} props.disableImageUpload Disable local image upload button
  * @param {string[]} props.tags Card tags
  * @param {string[]} props.tagsOptions List of all available tags
- * @param {Function} props.onClose Callback function for when user clicks outside of the dialog
+ * @param {Function} props.on关闭 Callback function for when user clicks outside of the dialog
  * @param {Function} props.onContentChange Callback function for when the content of the card is changed
  * @param {Function} props.onTagColorChange Callback function for when the color of a tag is changed
- * @param {Function} props.onNameChange Callback function for when the name of the card is changed
- * @param {Function} props.getNameErrorMsg Callback function to validate new card name
+ * @param {Function} props.on名称Change Callback function for when the name of the card is changed
+ * @param {Function} props.get名称ErrorMsg Callback function to validate new card name
  * @param {Function} props.t
  */
 function ExpandedCard(props) {
   const [isCardBeingRenamed, setIsCardBeingRenamed] = createSignal(false);
-  const [newCardName, setNewCardName] = createSignal(null);
-  const [isCreatingNewTag, setIsCreatingNewTag] = createSignal(null);
+  const [newCard名称, set新建Card名称] = createSignal(null);
+  const [isCreating新建Tag, setIsCreating新建Tag] = createSignal(null);
   const [availableTags, setAvailableTags] = createSignal([]);
-  const [newTagName, setNewTagName] = createSignal("");
-  const [newTagNameError, setTagNameError] = createSignal(null);
-  const [editor, setEditor] = createSignal(null);
+  const [newTag名称, set新建Tag名称] = createSignal("");
+  const [newTag名称Error, setTag名称Error] = createSignal(null);
+  const [editor, set编辑or] = createSignal(null);
   const [menuCoordinates, setMenuCoordinates] = createSignal(null);
   const [clickedTag, setClickedTag] = createSignal(null);
   const [showTagPopup, setShowTagPopup] = createSignal(false);
@@ -51,7 +51,7 @@ function ExpandedCard(props) {
   const [modeBtns, setModeBtns] = createSignal([]);
   const [mode, setMode] = makePersisted(createSignal("Markdown mode"), {
     storage: localStorage,
-    name: "lastEditorModeUsed",
+    name: "last编辑orModeUsed",
   });
 
   const dueDate = createMemo(() => {
@@ -64,75 +64,75 @@ function ExpandedCard(props) {
   let editorContainerRef;
 
   function handleTagRenameChange(newValue) {
-    setNewTagName(newValue);
+    set新建Tag名称(newValue);
     const taskAlreadyHasThisTag = props.tags.some(
-      (tag) => tag.name.toLowerCase() === newTagName().toLowerCase()
+      (tag) => tag.name.toLowerCase() === newTag名称().toLowerCase()
     );
-    setTagNameError(taskAlreadyHasThisTag ? props.t()('expandedCard.tagError.duplicate') : null);
+    setTag名称Error(taskAlreadyHasThisTag ? props.t()('expandedCard.tagError.duplicate') : null);
   }
 
-  function handleTagRenameConfirm() {
-    setIsCreatingNewTag(false);
-    if (newTagNameError()) {
-      return handleTagRenameCancel();
+  function handleTagRename确认() {
+    setIsCreating新建Tag(false);
+    if (newTag名称Error()) {
+      return handleTagRename取消();
     }
 
-    if (!newTagName()) {
-      return setNewTagName("");
+    if (!newTag名称()) {
+      return set新建Tag名称("");
     }
 
     const actualContent = editor().content;
-    const newContent = addTagToContent(actualContent, newTagName());
+    const newContent = addTagToContent(actualContent, newTag名称());
     props.onContentChange(newContent);
     editor().content = newContent;
-    setNewTagName("");
+    set新建Tag名称("");
   }
 
-  function handleTagRenameCancel() {
-    setIsCreatingNewTag(false);
-    setNewTagName("");
-    setTagNameError(null);
+  function handleTagRename取消() {
+    setIsCreating新建Tag(false);
+    set新建Tag名称("");
+    setTag名称Error(null);
   }
 
-  function handleAddTagBtnOnClick(event) {
+  function handle添加TagBtnOnClick(event) {
     event.stopPropagation();
-    setNewTagName("");
-    setIsCreatingNewTag(true);
+    set新建Tag名称("");
+    setIsCreating新建Tag(true);
     tagsInputRef?.focus();
   }
 
-  function deleteTag(tagName) {
+  function deleteTag(tag名称) {
     setShowTagPopup(false);
     setMenuCoordinates(null);
     const currentContent = editor().content;
-    const newContent = removeTagFromContent(currentContent, tagName);
+    const newContent = removeTagFromContent(currentContent, tag名称);
     editor().content = newContent;
     setClickedTag(null);
     props.onContentChange(newContent);
   }
 
-  function handleOnNameInputChange(value) {
-    setNewCardName(value);
+  function handleOn名称InputChange(value) {
+    set新建Card名称(value);
   }
 
-  function handleCardRenameConfirm() {
-    const newNameWihtoutSpaces = newCardName().trim();
-    const isSameName = newNameWihtoutSpaces === props.name;
-    if (isSameName) {
-      return handleCardRenameCancel();
+  function handleCardRename确认() {
+    const new名称WihtoutSpaces = newCard名称().trim();
+    const isSame名称 = new名称WihtoutSpaces === props.name;
+    if (isSame名称) {
+      return handleCardRename取消();
     }
-    props.onNameChange(newNameWihtoutSpaces);
-    setNewCardName("");
+    props.on名称Change(new名称WihtoutSpaces);
+    set新建Card名称("");
     setIsCardBeingRenamed(false);
   }
 
-  function handleCardRenameCancel() {
-    setNewCardName("");
+  function handleCardRename取消() {
+    set新建Card名称("");
     setIsCardBeingRenamed(false);
   }
 
   function startRenamingCard() {
-    setNewCardName(props.name);
+    set新建Card名称(props.name);
     setIsCardBeingRenamed(true);
   }
 
@@ -145,13 +145,13 @@ function ExpandedCard(props) {
       body: formData,
     })
     .then((res) => res.text())
-    .then((imageName) => {
-      handleEditorOnChange();
-      return `${api}/image/${imageName}`;
+    .then((image名称) => {
+      handle编辑orOnChange();
+      return `${api}/image/${image名称}`;
     })
   }
 
-  function handleEditorOnChange(e) {
+  function handle编辑orOnChange(e) {
     // Prevent update when opening dialog
     if (
       e?.target.name?.includes("mode-toggle") ||
@@ -205,10 +205,10 @@ function ExpandedCard(props) {
   function handleColorOptionClick(option) {
     setShowColorPopup(null);
     setMenuCoordinates(null);
-    const tagName = clickedTag().name;
+    const tag名称 = clickedTag().name;
     setClickedTag(null);
     const mapTagToColor = {
-      [tagName]: `var(--color-alt-${option + 1})`,
+      [tag名称]: `var(--color-alt-${option + 1})`,
     };
     props.onTagColorChange(mapTagToColor)
   }
@@ -247,7 +247,7 @@ function ExpandedCard(props) {
       props.tagsOptions.filter(
         (tagOption) =>
           !props.tags.some((tag) => tag.name === tagOption.name) &&
-          tagOption.name.toLowerCase().includes(newTagName()?.toLowerCase())
+          tagOption.name.toLowerCase().includes(newTag名称()?.toLowerCase())
       )
     );
   });
@@ -257,26 +257,26 @@ function ExpandedCard(props) {
     if (props.disableImageUpload) {
       editorClasses.push("disable-image-upload");
     }
-    const newEditor = new StacksEditor(
+    const new编辑or = new Stacks编辑or(
       editorContainerRef,
       props.content || "",
       {
         classList: ["theme-system"],
         targetClassList: editorClasses,
-        editorHelpLink: "https://github.com/BaldissaraMatheus/Tasks.md/issues",
+        editorHelpLink: "https://github.com/BaldissaraMatheus/任务.md/issues",
         imageUpload: { handler: uploadImage },
       }
     );
-    setEditor(newEditor);
-    const toolbarEndGroupNodes = [
-      ...editorContainerRef.childNodes[0].childNodes[1].childNodes[0]
-        .childNodes[1].childNodes[0].childNodes,
+    set编辑or(new编辑or);
+    const toolbarEndGroup否des = [
+      ...editorContainerRef.child否des[0].child否des[1].child否des[0]
+        .child否des[1].child否des[0].child否des,
     ];
-    const modeBtns = toolbarEndGroupNodes.filter((node) => node.title);
+    const modeBtns = toolbarEndGroup否des.filter((node) => node.title);
     setModeBtns(modeBtns);
   });
 
-  function handleClickEditorMode(e) {
+  function handleClick编辑orMode(e) {
     setMode(e.currentTarget.title);
   }
 
@@ -286,44 +286,44 @@ function ExpandedCard(props) {
     }
     dialogRef.show();
     for (const btn of modeBtns()) {
-      btn.addEventListener("click", handleClickEditorMode);
+      btn.addEventListener("click", handleClick编辑orMode);
     }
     const modeBtn = modeBtns().find((node) => node.title === mode());
     if (modeBtn) {
       modeBtn.click();
     }
-    const editorTextArea = editorContainerRef.childNodes[0].childNodes[2];
+    const editorTextArea = editorContainerRef.child否des[0].child否des[2];
     editorTextArea.focus();
   });
 
   onCleanup(() => {
     for (const btn of modeBtns()) {
-      btn.removeEventListener("click", handleClickEditorMode);
+      btn.removeEventListener("click", handleClick编辑orMode);
     }
   });
 
-  function handleDialogCancel(e) {
+  function handleDialog取消(e) {
     if (e?.target?.type === 'file') {
       return;
     }
     e?.preventDefault();
-    if (newCardName() || isCreatingNewTag()) {
-      setIsCreatingNewTag(false);
+    if (newCard名称() || isCreating新建Tag()) {
+      setIsCreating新建Tag(false);
       return;
     }
-    props.onClose();
+    props.on关闭();
   }
 
-  function handleBackdropClick(e) {
+  function handle返回dropClick(e) {
     if (e.target === backdropRef) {
-      handleDialogCancel();
+      handleDialog取消();
     }
   }
 
   function handleDialogKeyDown(e) {
     if (e.key === "Escape") {
       e.preventDefault();
-      handleDialogCancel();
+      handleDialog取消();
     }
   }
 
@@ -337,9 +337,9 @@ function ExpandedCard(props) {
     <Portal>
       <div
         class="dialog-backdrop"
-        onPointerDown={handleBackdropClick}
+        onPointerDown={handle返回dropClick}
         onKeyDown={(e) =>
-          handleKeyDown(e, (event) => handleBackdropClick(event))
+          handleKeyDown(e, (event) => handle返回dropClick(event))
         }
         ref={(el) => {
           backdropRef = el;
@@ -351,19 +351,19 @@ function ExpandedCard(props) {
           }}
           class={`${isMaximized() === "true" ? "dialog--maximized" : ""}`}
           onKeyDown={handleDialogKeyDown}
-          onCancel={handleDialogCancel}
+          on取消={handleDialog取消}
         >
           <div class="dialog__body">
             <header class="dialog__toolbar">
               <div class="dialog__toolbar-name">
                 <h1>
                   {isCardBeingRenamed() ? (
-                    <NameInput
-                      value={newCardName()}
-                      errorMsg={props.getNameErrorMsg(newCardName())}
-                      onChange={(value) => handleOnNameInputChange(value)}
-                      onConfirm={handleCardRenameConfirm}
-                      onCancel={handleCardRenameCancel}
+                    <名称Input
+                      value={newCard名称()}
+                      errorMsg={props.get名称ErrorMsg(newCard名称())}
+                      onChange={(value) => handleOn名称InputChange(value)}
+                      on确认={handleCardRename确认}
+                      on取消={handleCardRename取消}
                     />
                   ) : (
                     <div
@@ -387,12 +387,12 @@ function ExpandedCard(props) {
                     setIsMaximized(isMaximized() === "true" ? "false" : "true")
                   }
                 >
-                  <span innerHTML={isMaximized() === 'true' ? IconScreenNormal : IconScreenFull} />
+                  <span innerHTML={isMaximized() === 'true' ? IconScreen否rmal : IconScreenFull} />
                 </button>
                 <button
                   type="button"
                   class="dialog__toolbar-btn"
-                  onClick={props.onClose}
+                  onClick={props.on关闭}
                   title={props.t()('common.close')}
                 >
                   <span innerHTML={IconClear} />
@@ -401,13 +401,13 @@ function ExpandedCard(props) {
             </header>
             <div class="dialog__tags-and-due-date">
               <div class="dialog__tags">
-                {isCreatingNewTag() ? (
-                  <NameInput
-                    value={newTagName()}
-                    errorMsg={newTagNameError()}
+                {isCreating新建Tag() ? (
+                  <名称Input
+                    value={newTag名称()}
+                    errorMsg={newTag名称Error()}
                     onChange={handleTagRenameChange}
-                    onConfirm={handleTagRenameConfirm}
-                    onCancel={handleTagRenameCancel}
+                    on确认={handleTagRename确认}
+                    on取消={handleTagRename取消}
                     list="tags"
                     datalist={
                       <datalist id="tags">
@@ -418,7 +418,7 @@ function ExpandedCard(props) {
                     }
                   />
                 ) : (
-                  <button type="button" onClick={handleAddTagBtnOnClick}>
+                  <button type="button" onClick={handle添加TagBtnOnClick}>
                     {props.t()('expandedCard.addTag')}
                   </button>
                 )}
@@ -453,7 +453,7 @@ function ExpandedCard(props) {
               </div>
             </div>
             <div class="dialog__content">
-              <style>{stacksEditorStyle}</style>
+              <style>{stacks编辑orStyle}</style>
               <style>{stacksStyle}</style>
               <div
                 id="editor-container"
@@ -461,8 +461,8 @@ function ExpandedCard(props) {
                 ref={(el) => {
                   editorContainerRef = el;
                 }}
-                onKeyDown={handleEditorOnChange}
-                onClick={handleEditorOnChange}
+                onKeyDown={handle编辑orOnChange}
+                onClick={handle编辑orOnChange}
               />
             </div>
           </div>
@@ -470,7 +470,7 @@ function ExpandedCard(props) {
             id="tag-menu"
             open={showTagPopup()}
             options={tagMenuOptions()}
-            onClose={() => {
+            on关闭={() => {
               setShowTagPopup(null);
               setMenuCoordinates(null);
             }}
@@ -481,7 +481,7 @@ function ExpandedCard(props) {
             id="tag-color-menu"
             open={showColorPopup()}
             options={colorMenuOptions()}
-            onClose={() => {
+            on关闭={() => {
               setShowColorPopup(null);
               setMenuCoordinates(null);
             }}

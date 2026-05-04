@@ -11,11 +11,11 @@ import {
 import ExpandedCard from "./components/expanded-card";
 import { debounce } from "@solid-primitives/scheduled";
 import { api } from "./api";
-import { LaneName } from "./components/lane-name";
-import { NameInput } from "./components/name-input";
+import { Lane名称 } from "./components/lane-name";
+import { 名称Input } from "./components/name-input";
 import { Header } from "./components/header";
 import { Card } from "./components/card";
-import { CardName } from "./components/card-name";
+import { Card名称 } from "./components/card-name";
 import { BulkOperationsToolbar } from "./components/bulk-operations-toolbar";
 import { makePersisted } from "@solid-primitives/storage";
 import { DragAndDrop } from "./components/drag-and-drop";
@@ -37,16 +37,16 @@ function App() {
     storage: localStorage,
     name: "sortDirection",
   });
-  const [search, setSearch] = createSignal("");
+  const [search, set搜索] = createSignal("");
   const [filteredTag, setFilteredTag] = makePersisted(createSignal(null), {
     storage: localStorage,
     name: "filteredTag",
   });
   const [tagsOptions, setTagsOptions] = createSignal([]);
-  const [laneBeingRenamedName, setLaneBeingRenamedName] = createSignal(null);
-  const [newLaneName, setNewLaneName] = createSignal(null);
+  const [laneBeingRenamed名称, setLaneBeingRenamed名称] = createSignal(null);
+  const [newLane名称, set新建Lane名称] = createSignal(null);
   const [cardBeingRenamed, setCardBeingRenamed] = createSignal(null);
-  const [newCardName, setNewCardName] = createSignal(null);
+  const [newCard名称, set新建Card名称] = createSignal(null);
   const [viewMode, setViewMode] = makePersisted(createSignal("regular"), {
     storage: localStorage,
     name: "viewMode",
@@ -78,13 +78,13 @@ function App() {
     if (pathname.endsWith(".md") || pathname.endsWith(".md/")) {
       const pathnameParts = pathname.split("/").filter((item) => !!item);
       pathnameParts.pop();
-      const concatenatedName = pathnameParts
+      const concatenated名称 = pathnameParts
         .join("/")
         .substring(basePath().length, pathname.length);
-      if (!concatenatedName) {
+      if (!concatenated名称) {
         return "";
       }
-      return "/" + concatenatedName;
+      return "/" + concatenated名称;
     }
     if (pathname.endsWith("/")) {
       pathname = pathname.substring(0, pathname.length - 1);
@@ -95,24 +95,24 @@ function App() {
     return pathname;
   });
 
-  const selectedCardName = createMemo(() => {
+  const selectedCard名称 = createMemo(() => {
     let pathname = location.pathname;
     if (location.pathname.endsWith("/")) {
       pathname = pathname.substring(0, pathname.length - 1);
     }
-    const cardName = pathname.endsWith(".md") ? pathname.split("/").at(-1) : "";
-    return cardName;
+    const card名称 = pathname.endsWith(".md") ? pathname.split("/").at(-1) : "";
+    return card名称;
   });
 
   const selectedCard = createMemo(() => {
-    const decodedCardName = decodeURIComponent(selectedCardName())
+    const decodedCard名称 = decodeURIComponent(selectedCard名称())
     const card = cards().find(
-      (card) => `${card.name}.md` === decodedCardName
+      (card) => `${card.name}.md` === decodedCard名称
     );
     return card;
   });
 
-  function fetchTitle() {
+  function fetch标题() {
     if (!board()) {
       return fetch(`${api}/title`).then((res) => res.text());
     }
@@ -120,9 +120,9 @@ function App() {
     return decodeURIComponent(boardSplit.at(-1));
   }
 
-  const [title] = createResource(fetchTitle);
+  const [title] = createResource(fetch标题);
 
-  function getTagBackgroundCssColor(tagColor) {
+  function getTag返回groundCssColor(tagColor) {
     const backgroundColorNumber = RegExp("[0-9]").exec(`${tagColor || "1"}`)[0];
     const backgroundColor = `var(--color-alt-${backgroundColorNumber})`;
     return backgroundColor;
@@ -174,14 +174,14 @@ function App() {
           return duplicatedTag.toLowerCase() === tag.toLowerCase();
         }) === index
     );
-    const localTagNames = currentTagsWithoutDuplicates;
-    const tagsWithColors = localTagNames.map((tagName) => {
-      const remoteTag = remoteTagOptions.find((tag) => tag.name === tagName);
+    const localTag名称s = currentTagsWithoutDuplicates;
+    const tagsWithColors = localTag名称s.map((tag名称) => {
+      const remoteTag = remoteTagOptions.find((tag) => tag.name === tag名称);
       const tagColor =
         remoteTag?.backgroundColor ||
-        getTagBackgroundCssColor(pickTagColorIndexBasedOnHash(tagName));
+        getTag返回groundCssColor(pickTagColorIndexBasedOnHash(tag名称));
       return {
-        name: tagName,
+        name: tag名称,
         backgroundColor: tagColor,
       };
     });
@@ -190,9 +190,9 @@ function App() {
     newCards = newCards
       .map((card) => {
         const newCard = structuredClone(card);
-        const cardTagsNames = getTagsByCardContent(card.content) || [];
+        const cardTags名称s = getTagsByCardContent(card.content) || [];
         newCard.tags = tagsWithColors.filter((tagOption) =>
-          cardTagsNames.includes(tagOption.name)
+          cardTags名称s.includes(tagOption.name)
         );
         const dueDateStringMatch = newCard.content.match(/\[due:(.*?)\]/);
         newCard.dueDate = dueDateStringMatch?.length
@@ -276,18 +276,18 @@ function App() {
           return duplicatedTag.toLowerCase() === tag.toLowerCase();
         }) === index
     );
-    const cardTagOptions = cardTagsWithoutDuplicates.map((tagName) => {
-      const remoteTagOption = remoteTagOptions.find(option => option.name === tagName);
-      const tagColor = remoteTagOption?.backgroundColor || getTagBackgroundCssColor(
-        pickTagColorIndexBasedOnHash(tagName)
+    const cardTagOptions = cardTagsWithoutDuplicates.map((tag名称) => {
+      const remoteTagOption = remoteTagOptions.find(option => option.name === tag名称);
+      const tagColor = remoteTagOption?.backgroundColor || getTag返回groundCssColor(
+        pickTagColorIndexBasedOnHash(tag名称)
       );
       return {
-        name: tagName,
+        name: tag名称,
         backgroundColor: tagColor,
       };
     });
     newCard.tags = cardTagOptions;
-    newCard.lastUpdated = new Date().toISOString();
+    newCard.last更新d = new Date().toISOString();
     const dueDateStringMatch = newCard.content.match(/\[due:(.*?)\]/);
     newCard.dueDate = dueDateStringMatch?.length ? dueDateStringMatch[1] : "";
     newCards[newCardIndex] = newCard;
@@ -320,18 +320,18 @@ function App() {
     setFilteredTag(value);
   }
 
-  async function createNewCard(lane) {
+  async function create新建Card(lane) {
     const newCards = structuredClone(cards());
     const newCard = { lane };
-    const newCardName = v7();
-    await fetch(`${api}/resource${board()}/${encodeURIComponent(lane)}/${encodeURIComponent(newCardName)}.md`, {
+    const newCard名称 = v7();
+    await fetch(`${api}/resource${board()}/${encodeURIComponent(lane)}/${encodeURIComponent(newCard名称)}.md`, {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isFile: true }),
     });
-    newCard.name = newCardName;
-    newCard.lastUpdated = new Date().toISOString();
+    newCard.name = newCard名称;
+    newCard.last更新d = new Date().toISOString();
     newCard.createdAt = new Date().toISOString();
     newCards.unshift(newCard);
     setCards(newCards);
@@ -344,10 +344,10 @@ function App() {
       method: "DELETE",
       mode: "cors",
     });
-    const cardsWithoutDeletedCard = newCards.filter(
+    const cardsWithout删除dCard = newCards.filter(
       (cardToFind) => cardToFind.name !== card.name
     );
-    setCards(cardsWithoutDeletedCard);
+    setCards(cardsWithout删除dCard);
   }
 
   function moveCardToLane(card, newLane) {
@@ -394,41 +394,41 @@ function App() {
     }, 50);
   }
 
-  async function createNewLane() {
+  async function create新建Lane() {
     const newLanes = structuredClone(lanes());
-    const newName = v7();
-    await fetch(`${api}/resource${board()}/${encodeURIComponent(newName)}`, {
+    const new名称 = v7();
+    await fetch(`${api}/resource${board()}/${encodeURIComponent(new名称)}`, {
       method: "POST",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
     });
-    newLanes.push(newName);
+    newLanes.push(new名称);
     setLanes(newLanes);
-    setNewLaneName(newName);
-    setLaneBeingRenamedName(newName);
+    set新建Lane名称(new名称);
+    setLaneBeingRenamed名称(new名称);
   }
 
   function renameLane() {
-    fetch(`${api}/resource${board()}/${encodeURIComponent(laneBeingRenamedName())}`, {
+    fetch(`${api}/resource${board()}/${encodeURIComponent(laneBeingRenamed名称())}`, {
       method: "PATCH",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ newPath: `${board()}/${newLaneName()}` }),
+      body: JSON.stringify({ newPath: `${board()}/${newLane名称()}` }),
     });
     const newLanes = structuredClone(lanes());
     const newLaneIndex = newLanes.findIndex(
-      (laneToFind) => laneToFind === laneBeingRenamedName()
+      (laneToFind) => laneToFind === laneBeingRenamed名称()
     );
     const newLane = newLanes[newLaneIndex];
     const newCards = structuredClone(cards()).map((card) => ({
       ...card,
-      lane: card.lane === newLane ? newLaneName() : card.lane,
+      lane: card.lane === newLane ? newLane名称() : card.lane,
     }));
     setCards(newCards);
-    newLanes[newLaneIndex] = newLaneName();
+    newLanes[newLaneIndex] = newLane名称();
     setLanes(newLanes);
-    setNewLaneName(null);
-    setLaneBeingRenamedName(null);
+    set新建Lane名称(null);
+    setLaneBeingRenamed名称(null);
   }
 
   function deleteLane(lane) {
@@ -437,15 +437,15 @@ function App() {
       mode: "cors",
     });
     const newLanes = structuredClone(lanes());
-    const lanesWithoutDeletedCard = newLanes.filter(
+    const lanesWithout删除dCard = newLanes.filter(
       (laneToFind) => laneToFind !== lane
     );
-    setLanes(lanesWithoutDeletedCard);
+    setLanes(lanesWithout删除dCard);
     const newCards = cards().filter((card) => card.lane !== lane);
     setCards(newCards);
   }
 
-  function sortCardsByName() {
+  function sortCardsBy名称() {
     const newCards = structuredClone(cards());
     return newCards.sort((a, b) =>
       sortDirection() === "asc"
@@ -457,11 +457,11 @@ function App() {
   function sortCardsByTags() {
     const newCards = structuredClone(cards());
     return newCards.sort((a, b) => {
-      const tagNameA = a.tags?.[0]?.name || '';
-      const tagNameB = b.tags?.[0]?.name || '';
+      const tag名称A = a.tags?.[0]?.name || '';
+      const tag名称B = b.tags?.[0]?.name || '';
       return sortDirection() === "asc"
-        ? tagNameA.localeCompare(tagNameB)
-        : tagNameB.localeCompare(tagNameA);
+        ? tag名称A.localeCompare(tag名称B)
+        : tag名称B.localeCompare(tag名称A);
     });
   }
 
@@ -474,28 +474,28 @@ function App() {
     });
   }
 
-  function sortCardsByLastUpdated() {
+  function sortCardsByLast更新d() {
     const newCards = structuredClone(cards());
     return newCards.sort((a, b) => {
-      return (b.lastUpdated || "").localeCompare(a.lastUpdated || "");
+      return (b.last更新d || "").localeCompare(a.last更新d || "");
     });
   }
 
-  function sortCardsByCreatedFirst() {
+  function sortCardsBy创建dFirst() {
     const newCards = structuredClone(cards());
     return newCards.sort((a, b) => {
       return (a.createdAt || "").localeCompare(b.createdAt || "");
     });
   }
 
-  function handleOnSelectedCardNameChange(newName) {
-    renameCard(selectedCard().name, newName);
-    navigate(`${basePath()}${board()}/${encodeURIComponent(newName)}.md`);
+  function handleOnSelectedCard名称Change(new名称) {
+    renameCard(selectedCard().name, new名称);
+    navigate(`${basePath()}${board()}/${encodeURIComponent(new名称)}.md`);
   }
 
-  function handleDeleteCardsByLane(lane) {
-    const cardsToDelete = cards().filter((card) => card.lane === lane);
-    for (const card of cardsToDelete) {
+  function handle删除CardsByLane(lane) {
+    const cardsTo删除 = cards().filter((card) => card.lane === lane);
+    for (const card of cardsTo删除) {
       fetch(`${api}/resource${board()}/${encodeURIComponent(lane)}/${encodeURIComponent(card.name)}.md`, {
         method: "DELETE",
         mode: "cors",
@@ -539,13 +539,13 @@ function App() {
     return Array.from(allTagsOnSelected);
   });
 
-  async function bulkDeleteCards() {
-    const cardsToDelete = cards().filter((card) =>
+  async function bulk删除Cards() {
+    const cardsTo删除 = cards().filter((card) =>
       selectedCards().has(getCardKey(card))
     );
 
-    // Delete all selected cards using existing API
-    const deletePromises = cardsToDelete.map((card) =>
+    // 删除 all selected cards using existing API
+    const deletePromises = cardsTo删除.map((card) =>
       fetch(`${api}/resource${board()}/${encodeURIComponent(card.lane)}/${encodeURIComponent(card.name)}.md`, {
         method: "DELETE",
         mode: "cors",
@@ -554,7 +554,7 @@ function App() {
 
     await Promise.all(deletePromises);
 
-    // Update local state
+    // 更新 local state
     const remainingCards = cards().filter(
       (card) => !selectedCards().has(getCardKey(card))
     );
@@ -562,22 +562,22 @@ function App() {
     clearSelection(); // Clear after delete since cards are gone
   }
 
-  async function bulkAddTags(tagName) {
-    const cardsToUpdate = cards().filter((card) =>
+  async function bulk添加Tags(tag名称) {
+    const cardsTo更新 = cards().filter((card) =>
       selectedCards().has(getCardKey(card))
     );
 
-    // Add tag to each selected card using shared utility function
-    const updatePromises = cardsToUpdate.map(async (card) => {
+    // 添加 tag to each selected card using shared utility function
+    const updatePromises = cardsTo更新.map(async (card) => {
       const content = card.content || "";
       const currentTags = getTagsFromContent(content);
 
       // Skip if card already has this tag
-      if (currentTags.some((t) => t.toLowerCase() === tagName.toLowerCase())) {
+      if (currentTags.some((t) => t.toLowerCase() === tag名称.toLowerCase())) {
         return;
       }
 
-      const newContent = addTagToContent(content, tagName);
+      const newContent = addTagToContent(content, tag名称);
 
       return fetch(`${api}/resource${board()}/${encodeURIComponent(card.lane)}/${encodeURIComponent(card.name)}.md`, {
         method: "PATCH",
@@ -592,22 +592,22 @@ function App() {
     // Keep selection to allow chaining operations
   }
 
-  async function bulkRemoveTags(tagName) {
-    const cardsToUpdate = cards().filter((card) =>
+  async function bulk移除Tags(tag名称) {
+    const cardsTo更新 = cards().filter((card) =>
       selectedCards().has(getCardKey(card))
     );
 
-    // Remove tag from each selected card using shared utility function
-    const updatePromises = cardsToUpdate.map(async (card) => {
+    // 移除 tag from each selected card using shared utility function
+    const updatePromises = cardsTo更新.map(async (card) => {
       const content = card.content || "";
       const currentTags = getTagsFromContent(content);
 
       // Skip if card doesn't have this tag
-      if (!currentTags.some((t) => t.toLowerCase() === tagName.toLowerCase())) {
+      if (!currentTags.some((t) => t.toLowerCase() === tag名称.toLowerCase())) {
         return;
       }
 
-      const newContent = removeTagFromContent(content, tagName);
+      const newContent = removeTagFromContent(content, tag名称);
 
       return fetch(`${api}/resource${board()}/${encodeURIComponent(card.lane)}/${encodeURIComponent(card.name)}.md`, {
         method: "PATCH",
@@ -623,12 +623,12 @@ function App() {
   }
 
   async function bulkSetDueDate(dueDate) {
-    const cardsToUpdate = cards().filter((card) =>
+    const cardsTo更新 = cards().filter((card) =>
       selectedCards().has(getCardKey(card))
     );
 
     // Set due date for each selected card using shared utility function
-    const updatePromises = cardsToUpdate.map(async (card) => {
+    const updatePromises = cardsTo更新.map(async (card) => {
       const content = card.content || "";
       const newContent = setDueDateInContent(content, dueDate);
 
@@ -645,27 +645,27 @@ function App() {
     // Keep selection to allow chaining operations
   }
 
-  function renameCard(oldName, newName) {
+  function renameCard(old名称, new名称) {
     const newCards = structuredClone(cards());
-    const newCardIndex = newCards.findIndex((card) => card.name === oldName);
+    const newCardIndex = newCards.findIndex((card) => card.name === old名称);
     const newCard = newCards[newCardIndex];
-    const newCardNameWithoutSpaces = newName.trim();
+    const newCard名称WithoutSpaces = new名称.trim();
     fetch(`${api}/resource${board()}/${encodeURIComponent(newCard.lane)}/${encodeURIComponent(newCard.name)}.md`, {
       method: "PATCH",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        newPath: `${board()}/${newCard.lane}/${newCardNameWithoutSpaces}.md`,
+        newPath: `${board()}/${newCard.lane}/${newCard名称WithoutSpaces}.md`,
       }),
     });
-    newCard.name = newCardNameWithoutSpaces;
+    newCard.name = newCard名称WithoutSpaces;
     newCards[newCardIndex] = newCard;
     setCards(newCards);
     setCardBeingRenamed(null);
     // Restore focus to the renamed card
     setTimeout(() => {
-      setFocusedCardId(newCardNameWithoutSpaces);
-      document.getElementById(`card-${newCardNameWithoutSpaces}`)?.focus();
+      setFocusedCardId(newCard名称WithoutSpaces);
+      document.getElementById(`card-${newCard名称WithoutSpaces}`)?.focus();
     }, 50);
   }
 
@@ -692,34 +692,34 @@ function App() {
     navigate(`${basePath()}${board()}/${encodeURIComponent(cards()[newCardIndex].name)}.md`);
   }
 
-  function validateName(newName, namesList) {
-    if (newName === null) {
+  function validate名称(new名称, namesList) {
+    if (new名称 === null) {
       return null;
     }
-    if (newName === "") {
-      return t()('validation.mustHaveName');
+    if (new名称 === "") {
+      return t()('validation.mustHave名称');
     }
-    if (newName.startsWith(".")) {
+    if (new名称.startsWith(".")) {
       return t()('validation.hiddenByDot');
     }
-    if (namesList.filter((name) => name === (newName || "").trim()).length) {
-      return t()('validation.duplicateName');
+    if (namesList.filter((name) => name === (new名称 || "").trim()).length) {
+      return t()('validation.duplicate名称');
     }
-    if (/[<>:%"/\\|?*]/g.test(newName)) {
+    if (/[<>:%"/\\|?*]/g.test(new名称)) {
       return t()('validation.forbiddenChars');
     }
-    if (newName.endsWith(".md")) {
+    if (new名称.endsWith(".md")) {
       return t()('validation.noMdExtension');
     }
-    if (newName === "_api") {
-      return t()('validation.prohibitedName');
+    if (new名称 === "_api") {
+      return t()('validation.prohibited名称');
     }
     return null;
   }
 
   function startRenamingLane(lane) {
-    setNewLaneName(lane);
-    setLaneBeingRenamedName(lane);
+    set新建Lane名称(lane);
+    setLaneBeingRenamed名称(lane);
   }
 
   const sortedCards = createMemo(() => {
@@ -727,7 +727,7 @@ function App() {
       return cards();
     }
     if (sort() === "name") {
-      return sortCardsByName();
+      return sortCardsBy名称();
     }
     if (sort() === "tags") {
       return sortCardsByTags();
@@ -735,11 +735,11 @@ function App() {
     if (sort() === "due") {
       return sortCardsByDue();
     }
-    if (sort() === "lastUpdated") {
-      return sortCardsByLastUpdated();
+    if (sort() === "last更新d") {
+      return sortCardsByLast更新d();
     }
     if (sort() === "createdFirst") {
-      return sortCardsByCreatedFirst();
+      return sortCardsBy创建dFirst();
     }
     return cards();
   });
@@ -765,7 +765,7 @@ function App() {
   }
 
   function startRenamingCard(card) {
-    setNewCardName(card.name);
+    set新建Card名称(card.name);
     setCardBeingRenamed(card);
   }
 
@@ -791,12 +791,12 @@ function App() {
       return;
     }
     const newSortJson = lanes().reduce((prev, curr) => {
-      const laneCardNames = cards()
+      const laneCard名称s = cards()
         .filter((card) => card.lane === curr)
         .map((card) => card.name);
       return {
         ...prev,
-        [curr]: laneCardNames,
+        [curr]: laneCard名称s,
       };
     }, {});
     fetch(`${api}/sort${board()}`, {
@@ -837,22 +837,22 @@ function App() {
   }
 
   function handleCardsSortChange(changedCard) {
-    const cardName = changedCard.id.slice("card-".length);
-    const oldIndex = cards().findIndex((card) => card.name === cardName);
+    const card名称 = changedCard.id.slice("card-".length);
+    const oldIndex = cards().findIndex((card) => card.name === card名称);
     const card = cards()[oldIndex];
     const newCardLane = changedCard.to.slice("lane-content-".length);
-    fetch(`${api}/resource${board()}/${encodeURIComponent(card.lane)}/${encodeURIComponent(cardName)}.md`, {
+    fetch(`${api}/resource${board()}/${encodeURIComponent(card.lane)}/${encodeURIComponent(card名称)}.md`, {
       method: "PATCH",
       mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        newPath: `${board()}/${newCardLane}/${cardName}.md`,
+        newPath: `${board()}/${newCardLane}/${card名称}.md`,
       }),
     });
     card.lane = newCardLane;
     const newCards = lanes().flatMap((lane) => {
       let laneCards = cards().filter(
-        (card) => card.lane === lane && card.name !== cardName
+        (card) => card.lane === lane && card.name !== card名称
       );
       if (lane === newCardLane) {
         laneCards = [
@@ -867,9 +867,9 @@ function App() {
 
     // Keep focus on the moved card so keyboard navigation works after
     // drag-and-drop and keyboard-based moves.
-    setFocusedCardId(cardName);
+    setFocusedCardId(card名称);
     setTimeout(() => {
-      document.getElementById(`card-${cardName}`)?.focus();
+      document.getElementById(`card-${card名称}`)?.focus();
     }, 50);
   }
 
@@ -915,8 +915,8 @@ function App() {
       focusedElement = document.getElementById(`card-${focusedCardId()}`)?.focus();
     }
     if (focusedLaneIndex()) {
-      const laneName = lanes()[focusedLaneIndex()];
-      focusedElement = document.getElementById(`lane-${laneName}`)?.focus();
+      const lane名称 = lanes()[focusedLaneIndex()];
+      focusedElement = document.getElementById(`lane-${lane名称}`)?.focus();
     }
     if (focusedElement) {
       focusedElement.scrollIntoView()
@@ -925,7 +925,7 @@ function App() {
 
   function handleMainBoardKeyDown(e) {
     // Don't interfere with input fields
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+    if (e.target.tag名称 === 'INPUT' || e.target.tag名称 === 'TEXTAREA' || e.target.tag名称 === 'SELECT') {
       return;
     }
 
@@ -954,7 +954,7 @@ function App() {
             if (e.altKey) {
               moveCardInLane(currentCard, 'down');
             } else {
-              // Normal Down: Navigate to next card in lane
+              // 否rmal Down: Navigate to next card in lane
               const currentLaneCards = getCardsFromLane(currentCard.lane);
               const currentIndexInLane = currentLaneCards.findIndex(c => c.name === focusedCardId());
               if (currentIndexInLane < currentLaneCards.length - 1) {
@@ -966,8 +966,8 @@ function App() {
           }
         } else if (focusedLaneIndex() !== null) {
           // From a focused lane, move Down to the first card in that lane
-          const laneName = lanes()[focusedLaneIndex()];
-          const laneCards = getCardsFromLane(laneName);
+          const lane名称 = lanes()[focusedLaneIndex()];
+          const laneCards = getCardsFromLane(lane名称);
           if (laneCards.length > 0) {
             const firstCard = laneCards[0];
             setFocusedCardId(firstCard.name);
@@ -993,7 +993,7 @@ function App() {
             if (e.altKey) {
               moveCardInLane(currentCard, 'up');
             } else {
-              // Normal Up: Navigate to previous card in lane
+              // 否rmal Up: Navigate to previous card in lane
               const currentLaneCards = getCardsFromLane(currentCard.lane);
               const currentIndexInLane = currentLaneCards.findIndex(c => c.name === focusedCardId());
               if (currentIndexInLane > 0) {
@@ -1037,7 +1037,7 @@ function App() {
                 moveCardToLane(currentCard, nextLane);
               }
             } else {
-              // Normal Right: Navigate to first card in next non-empty lane
+              // 否rmal Right: Navigate to first card in next non-empty lane
               for (let i = currentLaneIndex + 1; i < lanes().length; i++) {
                 const nextLaneCards = getCardsFromLane(lanes()[i]);
                 if (nextLaneCards.length > 0) {
@@ -1053,20 +1053,20 @@ function App() {
           if (e.altKey) {
             // Alt+Right: move the lane itself one position to the right
             if (currentLaneIdx < lanes().length - 1) {
-              const laneName = lanes()[currentLaneIdx];
+              const lane名称 = lanes()[currentLaneIdx];
               handleLanesSortChange({
-                id: `lane-${laneName}`,
+                id: `lane-${lane名称}`,
                 index: currentLaneIdx + 1,
               });
             }
           } else {
-            // Normal Right: move lane focus to the next lane
+            // 否rmal Right: move lane focus to the next lane
             if (currentLaneIdx < lanes().length - 1) {
-              const nextLaneName = lanes()[currentLaneIdx + 1];
+              const nextLane名称 = lanes()[currentLaneIdx + 1];
               setFocusedLaneIndex(currentLaneIdx + 1);
               setFocusedCardId(null);
               setTimeout(() => {
-                document.getElementById(`lane-${nextLaneName}`)?.focus();
+                document.getElementById(`lane-${nextLane名称}`)?.focus();
               }, 0);
             }
           }
@@ -1094,7 +1094,7 @@ function App() {
                 moveCardToLane(currentCard, prevLane);
               }
             } else {
-              // Normal Left: Navigate to first card in previous non-empty lane
+              // 否rmal Left: Navigate to first card in previous non-empty lane
               for (let i = currentLaneIndex - 1; i >= 0; i--) {
                 const prevLaneCards = getCardsFromLane(lanes()[i]);
                 if (prevLaneCards.length > 0) {
@@ -1110,20 +1110,20 @@ function App() {
           if (e.altKey) {
             // Alt+Left: move the lane itself one position to the left
             if (currentLaneIdx > 0) {
-              const laneName = lanes()[currentLaneIdx];
+              const lane名称 = lanes()[currentLaneIdx];
               handleLanesSortChange({
-                id: `lane-${laneName}`,
+                id: `lane-${lane名称}`,
                 index: currentLaneIdx - 1,
               });
             }
           } else {
-            // Normal Left: move lane focus to the previous lane
+            // 否rmal Left: move lane focus to the previous lane
             if (currentLaneIdx > 0) {
-              const prevLaneName = lanes()[currentLaneIdx - 1];
+              const prevLane名称 = lanes()[currentLaneIdx - 1];
               setFocusedLaneIndex(currentLaneIdx - 1);
               setFocusedCardId(null);
               setTimeout(() => {
-                document.getElementById(`lane-${prevLaneName}`)?.focus();
+                document.getElementById(`lane-${prevLane名称}`)?.focus();
               }, 0);
             }
           }
@@ -1136,7 +1136,7 @@ function App() {
         break;
 
       case 'Enter':
-      case 'e': // Edit card
+      case 'e': // 编辑 card
         e.preventDefault();
         if (focusedCardId()) {
           const card = cards().find(c => c.name === focusedCardId());
@@ -1146,14 +1146,14 @@ function App() {
         }
         break;
 
-      case 'n': // New card
+      case 'n': // 新建 card
         e.preventDefault();
         if (lanes().length > 0) {
           const currentCard = focusedCardId()
             ? cards().find(c => c.name === focusedCardId())
             : null;
           const targetLane = currentCard ? currentCard.lane : lanes()[0];
-          createNewCard(targetLane);
+          create新建Card(targetLane);
         }
         break;
 
@@ -1167,11 +1167,11 @@ function App() {
         }
         break;
 
-      case 'd': // Delete card (with confirmation)
+      case 'd': // 删除 card (with confirmation)
         e.preventDefault();
         if (focusedCardId()) {
           const card = cards().find(c => c.name === focusedCardId());
-          if (card && confirm(`Delete card "${card.name}"?`)) {
+          if (card && confirm(`删除 card "${card.name}"?`)) {
             // Find cards in the same lane for next focus
             const currentLaneCards = getCardsFromLane(card.lane);
             const currentIndexInLane = currentLaneCards.findIndex(c => c.name === focusedCardId());
@@ -1223,13 +1223,13 @@ function App() {
     >
       <Header
         search={search()}
-        onSearchChange={setSearch}
+        on搜索Change={set搜索}
         sort={sort() === "none" ? "none" : `${sort()}:${sortDirection()}`}
         onSortChange={handleSortSelectOnChange}
         tagOptions={tagsOptions().map((option) => option.name)}
         filteredTag={filteredTag()}
         onTagChange={handleFilterSelectOnChange}
-        onNewLaneBtnClick={createNewLane}
+        on新建LaneBtnClick={create新建Lane}
         viewMode={viewMode()}
         onViewModeChange={(e) => setViewMode(e.target.value)}
         selectionMode={selectionMode()}
@@ -1241,9 +1241,9 @@ function App() {
       <Show when={selectionMode()}>
         <BulkOperationsToolbar
           selectedCount={selectedCards().size}
-          onDelete={bulkDeleteCards}
-          onAddTags={bulkAddTags}
-          onRemoveTags={bulkRemoveTags}
+          on删除={bulk删除Cards}
+          on添加Tags={bulk添加Tags}
+          on移除Tags={bulk移除Tags}
           onSetDueDate={bulkSetDueDate}
           onClearSelection={clearSelection}
           tagsOptions={tagsOptions().map((option) => option.name)}
@@ -1266,30 +1266,30 @@ function App() {
                 }}
               >
                 <header class="lane__header">
-                  {laneBeingRenamedName() === lane ? (
-                    <NameInput
-                      value={newLaneName()}
-                      errorMsg={validateName(
-                        newLaneName(),
+                  {laneBeingRenamed名称() === lane ? (
+                    <名称Input
+                      value={newLane名称()}
+                      errorMsg={validate名称(
+                        newLane名称(),
                         lanes().filter(
-                          (lane) => lane !== laneBeingRenamedName()
+                          (lane) => lane !== laneBeingRenamed名称()
                         )
                       )}
-                      onChange={(newValue) => setNewLaneName(newValue)}
-                      onConfirm={renameLane}
-                      onCancel={() => {
-                        setNewLaneName(null);
-                        setLaneBeingRenamedName(null);
+                      onChange={(newValue) => set新建Lane名称(newValue)}
+                      on确认={renameLane}
+                      on取消={() => {
+                        set新建Lane名称(null);
+                        setLaneBeingRenamed名称(null);
                       }}
                     />
                   ) : (
-                    <LaneName
+                    <Lane名称
                       name={lane}
                       count={getCardsFromLane(lane).length}
                       onRenameBtnClick={() => startRenamingLane(lane)}
-                      onCreateNewCardBtnClick={() => createNewCard(lane)}
-                      onDelete={() => deleteLane(lane)}
-                      onDeleteCards={() => handleDeleteCardsByLane(lane)}
+                      on创建新建CardBtnClick={() => create新建Card(lane)}
+                      on删除={() => deleteLane(lane)}
+                      on删除Cards={() => handle删除CardsByLane(lane)}
                       t={t}
                     />
                   )}
@@ -1331,10 +1331,10 @@ function App() {
                         }}
                         headerSlot={
                           cardBeingRenamed()?.name === card.name ? (
-                            <NameInput
-                              value={newCardName()}
-                              errorMsg={validateName(
-                                newCardName(),
+                            <名称Input
+                              value={newCard名称()}
+                              errorMsg={validate名称(
+                                newCard名称(),
                                 cards()
                                   .filter(
                                     (card) =>
@@ -1342,32 +1342,32 @@ function App() {
                                   )
                                   .map((card) => card.name)
                               )}
-                              onChange={(newValue) => setNewCardName(newValue)}
-                              onConfirm={() =>
+                              onChange={(newValue) => set新建Card名称(newValue)}
+                              on确认={() =>
                                 renameCard(
                                   cardBeingRenamed()?.name,
-                                  newCardName()
+                                  newCard名称()
                                 )
                               }
-                              onCancel={() => {
-                                const cardName = cardBeingRenamed()?.name;
-                                setNewCardName(null);
+                              on取消={() => {
+                                const card名称 = cardBeingRenamed()?.name;
+                                set新建Card名称(null);
                                 setCardBeingRenamed(null);
                                 // Restore focus to the card
                                 setTimeout(() => {
-                                  if (cardName) {
-                                    setFocusedCardId(cardName);
-                                    document.getElementById(`card-${cardName}`)?.focus();
+                                  if (card名称) {
+                                    setFocusedCardId(card名称);
+                                    document.getElementById(`card-${card名称}`)?.focus();
                                   }
                                 }, 50);
                               }}
                             />
                           ) : (
-                            <CardName
+                            <Card名称
                               name={card.name}
                               hasContent={!!card.content}
                               onRenameBtnClick={() => startRenamingCard(card)}
-                              onDelete={() => deleteCard(card)}
+                              on删除={() => deleteCard(card)}
                               onClick={() =>
                                 navigate(
                                   `${basePath()}${board()}/${encodeURIComponent(card.name)}.md`
@@ -1395,13 +1395,13 @@ function App() {
             tags={selectedCard().tags || []}
             tagsOptions={tagsOptions()}
             t={t}
-            onClose={() => {
-              const cardName = selectedCard().name;
+            on关闭={() => {
+              const card名称 = selectedCard().name;
               navigate(`${basePath()}${board()}` || "/");
               // Restore focus to the card after navigation
               setTimeout(() => {
-                setFocusedCardId(cardName);
-                const cardElement = document.getElementById(`card-${cardName}`);
+                setFocusedCardId(card名称);
+                const cardElement = document.getElementById(`card-${card名称}`);
                 if (cardElement) {
                   cardElement.focus();
                   cardElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -1412,10 +1412,10 @@ function App() {
               debounceChangeCardContent(value, selectedCard().id)
             }
             onTagColorChange={updateTagColorFromExpandedCard}
-            onNameChange={handleOnSelectedCardNameChange}
-            getNameErrorMsg={(newName) =>
-              validateName(
-                newName,
+            on名称Change={handleOnSelectedCard名称Change}
+            get名称ErrorMsg={(new名称) =>
+              validate名称(
+                new名称,
                 cards()
                   .filter((card) => card.name !== selectedCard().name)
                   .map((card) => card.name)
@@ -1428,7 +1428,7 @@ function App() {
         </Show>
       </Show>
       <Show when={showHelpDialog()}>
-        <KeyboardNavigationDialog onClose={() => setShowHelpDialog(false)} t={t} />
+        <KeyboardNavigationDialog on关闭={() => setShowHelpDialog(false)} t={t} />
       </Show>
     </div>
   );

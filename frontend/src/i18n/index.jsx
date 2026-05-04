@@ -28,19 +28,19 @@ function detectLocale() {
 	}
 }
 
-// Create persisted signal for locale
+// 创建 persisted signal for locale
 const [locale, setLocale] = makePersisted(
 	createSignal(detectLocale()),
 	{ storage: localStorage, name: 'locale' }
 );
 
-// Create memoized flattened dictionary based on current locale
+// 创建 memoized flattened dictionary based on current locale
 const dict = createMemo(() => flatten(locale() === 'es' ? es : en));
 
 // Translation function that uses the current dict
 const t = createMemo(() => translator(dict, resolveTemplate));
 
-// Create context
+// 创建 context
 const I18nContext = createContext({ t, locale, setLocale });
 
 /**

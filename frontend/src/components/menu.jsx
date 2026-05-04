@@ -8,22 +8,22 @@ import { clickOutside, handleKeyDown } from "../utils";
  * @param {boolean} props.open
  * @param {number} props.x
  * @param {number} props.y
- * @param {Function} props.onClose
+ * @param {Function} props.on关闭
  * @param {Object[]} props.options
  */
 export function Menu(props) {
-	const [confirmationPromptCb, setConfirmationPromptCb] = createSignal(null);
+	const [confirmationPromptCb, set确认ationPromptCb] = createSignal(null);
 	let menuRef;
 	let confirmBtnRef;
 
 	function close() {
-		setConfirmationPromptCb(null);
-		props.onClose();
+		set确认ationPromptCb(null);
+		props.on关闭();
 	}
 
 	function handleOptionClick(option, focus) {
-		if (option.requiresConfirmation) {
-			setConfirmationPromptCb(() => option.onClick);
+		if (option.requires确认ation) {
+			set确认ationPromptCb(() => option.onClick);
 			if (focus) {
 				setTimeout(() => {
 					confirmBtnRef.focus();
@@ -32,14 +32,14 @@ export function Menu(props) {
 			return;
 		}
 		option.onClick();
-		props.onClose();
+		props.on关闭();
 	}
 
-	function handleOptionConfirmation(e) {
+	function handleOption确认ation(e) {
 		e.stopImmediatePropagation();
 		confirmationPromptCb()();
-		setConfirmationPromptCb(null);
-		props.onClose();
+		set确认ationPromptCb(null);
+		props.on关闭();
 	}
 
 	createEffect(() => {
@@ -74,7 +74,7 @@ export function Menu(props) {
 								handleKeyDown(
 									e,
 									() => handleOptionClick(option, true),
-									props.onClose,
+									props.on关闭,
 								)
 							}
 						>
@@ -87,19 +87,19 @@ export function Menu(props) {
 							confirmBtnRef = el;
 						}}
 						type="button"
-						onClick={handleOptionConfirmation}
+						onClick={handleOption确认ation}
 						onKeyDown={(e) =>
-							handleKeyDown(e, () => handleOptionConfirmation(e), close)
+							handleKeyDown(e, () => handleOption确认ation(e), close)
 						}
 					>
-						Confirm
+						确认
 					</button>
 					<button
 						type="button"
 						onClick={close}
 						onKeyDown={(e) => handleKeyDown(e, close, close)}
 					>
-						Cancel
+						取消
 					</button>
 				</Show>
 			</div>

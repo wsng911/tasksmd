@@ -10,10 +10,10 @@ import { IconEllipsisVertical } from '@stackoverflow/stacks-icons/icons'
  * @param {string} props.name
  * @param {boolean} props.hasContent
  * @param {Function} props.onRenameBtnClick
- * @param {Function} props.onDelete
+ * @param {Function} props.on删除
  * @param {Function} props.t
  */
-export function CardName(props) {
+export function Card名称(props) {
 	const [showMenu, setShowMenu] = createSignal(false);
 	const [menuCoordinates, setMenuCoordinates] = createSignal();
 
@@ -22,17 +22,17 @@ export function CardName(props) {
 		props.onRenameBtnClick();
 	}
 
-	function handleMenuClose() {
+	function handleMenu关闭() {
 		setShowMenu(false);
 		setMenuCoordinates(null);
 	}
 
 	const menuOptions = createMemo(() => [
-		{ label: props.t()('cardName.rename'), onClick: startRenamingCard },
+		{ label: props.t()('card名称.rename'), onClick: startRenamingCard },
 		{
-			label: props.t()('cardName.delete'),
-			onClick: props.onDelete,
-			requiresConfirmation: true,
+			label: props.t()('card名称.delete'),
+			onClick: props.on删除,
+			requires确认ation: true,
 		},
 	]);
 
@@ -45,7 +45,7 @@ export function CardName(props) {
 		event.preventDefault();
 	}
 
-	function handleCancel() {
+	function handle取消() {
 		setShowMenu(false);
 	}
 
@@ -58,7 +58,7 @@ export function CardName(props) {
 			<div class="header-buttons">
 				<button
 					type="button"
-					title={props.t()('cardName.showOptions')}
+					title={props.t()('card名称.showOptions')}
 					class="small"
 					popoverTarget={`${props.name}-card-options`}
 					onClick={handleClickCardOptions}
@@ -66,7 +66,7 @@ export function CardName(props) {
 						handleKeyDown(
 							e,
 							() => handleClickCardOptions(e, true),
-							handleCancel,
+							handle取消,
 						)
 					}
 				>
@@ -79,7 +79,7 @@ export function CardName(props) {
 						id={`${props.name}-card-options`}
 						open={showMenu()}
 						options={menuOptions()}
-						onClose={handleMenuClose}
+						on关闭={handleMenu关闭}
 						x={menuCoordinates()?.x}
 						y={menuCoordinates()?.y}
 					/>

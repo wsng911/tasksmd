@@ -3,9 +3,9 @@ import { createSignal, Show, For, onMount, onCleanup, createEffect } from "solid
 /**
  * @param {Object} props
  * @param {number} props.selectedCount - Number of selected cards
- * @param {Function} props.onDelete - Callback for bulk delete
- * @param {Function} props.onAddTags - Callback for bulk add tags
- * @param {Function} props.onRemoveTags - Callback for bulk remove tags
+ * @param {Function} props.on删除 - Callback for bulk delete
+ * @param {Function} props.on添加Tags - Callback for bulk add tags
+ * @param {Function} props.on移除Tags - Callback for bulk remove tags
  * @param {Function} props.onSetDueDate - Callback for bulk set due date
  * @param {Function} props.onClearSelection - Callback to clear selection
  * @param {string[]} props.tagsOptions - Available tag options (all tags in project)
@@ -14,17 +14,17 @@ import { createSignal, Show, For, onMount, onCleanup, createEffect } from "solid
  */
 export function BulkOperationsToolbar(props) {
   const [showTagMenu, setShowTagMenu] = createSignal(false);
-  const [showRemoveTagMenu, setShowRemoveTagMenu] = createSignal(false);
+  const [show移除TagMenu, setShow移除TagMenu] = createSignal(false);
   const [showDueDateInput, setShowDueDateInput] = createSignal(false);
-  const [tagSearchQuery, setTagSearchQuery] = createSignal("");
-  const [removeTagSearchQuery, setRemoveTagSearchQuery] = createSignal("");
+  const [tag搜索Query, setTag搜索Query] = createSignal("");
+  const [removeTag搜索Query, set移除Tag搜索Query] = createSignal("");
   const [dueDate, setDueDate] = createSignal("");
 
   let dueDateRef;
-  let tagSearchInputRef;
+  let tag搜索InputRef;
   let tagDropdownRef;
   let removeTagDropdownRef;
-  let removeTagSearchInputRef;
+  let removeTag搜索InputRef;
 
   // Click outside to close tag dropdown
   onMount(() => {
@@ -32,19 +32,19 @@ export function BulkOperationsToolbar(props) {
       // Check if clicking on backdrop
       if (event.target.classList.contains('bulk-operations-toolbar__dropdown-backdrop')) {
         setShowTagMenu(false);
-        setTagSearchQuery("");
-        setShowRemoveTagMenu(false);
-        setRemoveTagSearchQuery("");
+        setTag搜索Query("");
+        setShow移除TagMenu(false);
+        set移除Tag搜索Query("");
         return;
       }
       
       if (tagDropdownRef && !tagDropdownRef.contains(event.target)) {
         setShowTagMenu(false);
-        setTagSearchQuery("");
+        setTag搜索Query("");
       }
       if (removeTagDropdownRef && !removeTagDropdownRef.contains(event.target)) {
-        setShowRemoveTagMenu(false);
-        setRemoveTagSearchQuery("");
+        setShow移除TagMenu(false);
+        set移除Tag搜索Query("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -55,22 +55,22 @@ export function BulkOperationsToolbar(props) {
 
   const filteredTags = () => {
     if (!props.tagsOptions) return [];
-    if (!tagSearchQuery()) return props.tagsOptions;
+    if (!tag搜索Query()) return props.tagsOptions;
     return props.tagsOptions.filter((tag) =>
-      tag.toLowerCase().includes(tagSearchQuery().toLowerCase())
+      tag.toLowerCase().includes(tag搜索Query().toLowerCase())
     );
   };
 
-  const filteredRemoveTags = () => {
+  const filtered移除Tags = () => {
     if (!props.tagsOnSelectedCards) return [];
-    if (!removeTagSearchQuery()) return props.tagsOnSelectedCards;
+    if (!removeTag搜索Query()) return props.tagsOnSelectedCards;
     return props.tagsOnSelectedCards.filter((tag) =>
-      tag.toLowerCase().includes(removeTagSearchQuery().toLowerCase())
+      tag.toLowerCase().includes(removeTag搜索Query().toLowerCase())
     );
   };
 
-  const showCreateOption = () => {
-    const query = tagSearchQuery().trim();
+  const show创建Option = () => {
+    const query = tag搜索Query().trim();
     if (!query) return false;
     // Show create option if the query doesn't exactly match any existing tag
     return !props.tagsOptions?.some(
@@ -78,25 +78,25 @@ export function BulkOperationsToolbar(props) {
     );
   };
 
-  function handleAddTag(tagName) {
-    props.onAddTags(tagName);
-    setTagSearchQuery("");
-    setTimeout(() => tagSearchInputRef?.focus(), 0);
+  function handle添加Tag(tag名称) {
+    props.on添加Tags(tag名称);
+    setTag搜索Query("");
+    setTimeout(() => tag搜索InputRef?.focus(), 0);
   }
 
-  function handleCreateAndAddTag() {
-    const tagName = tagSearchQuery().trim();
-    if (tagName) {
-      props.onAddTags(tagName);
-      setTagSearchQuery("");
-      setTimeout(() => tagSearchInputRef?.focus(), 0);
+  function handle创建And添加Tag() {
+    const tag名称 = tag搜索Query().trim();
+    if (tag名称) {
+      props.on添加Tags(tag名称);
+      setTag搜索Query("");
+      setTimeout(() => tag搜索InputRef?.focus(), 0);
     }
   }
 
-  function handleRemoveTag(tagName) {
-    props.onRemoveTags(tagName);
-    setRemoveTagSearchQuery("");
-    setTimeout(() => removeTagSearchInputRef?.focus(), 0);
+  function handle移除Tag(tag名称) {
+    props.on移除Tags(tag名称);
+    set移除Tag搜索Query("");
+    setTimeout(() => removeTag搜索InputRef?.focus(), 0);
   }
 
   function handleSetDueDate() {
@@ -107,19 +107,19 @@ export function BulkOperationsToolbar(props) {
     }
   }
 
-  function handleDelete() {
+  function handle删除() {
     const confirmed = window.confirm(
-      props.t()(props.selectedCount !== 1 ? 'bulk.deleteConfirm_plural' : 'bulk.deleteConfirm')
+      props.t()(props.selectedCount !== 1 ? 'bulk.delete确认_plural' : 'bulk.delete确认')
     );
     if (confirmed) {
-      props.onDelete();
+      props.on删除();
     }
   }
 
   createEffect(() => {
-    if (showRemoveTagMenu() && (!props.tagsOnSelectedCards || props.tagsOnSelectedCards.length === 0)) {
-      setShowRemoveTagMenu(false);
-      setRemoveTagSearchQuery("");
+    if (show移除TagMenu() && (!props.tagsOnSelectedCards || props.tagsOnSelectedCards.length === 0)) {
+      setShow移除TagMenu(false);
+      set移除Tag搜索Query("");
     }
   });
 
@@ -136,13 +136,13 @@ export function BulkOperationsToolbar(props) {
               const nextShowTagMenu = !showTagMenu();
               setShowTagMenu(nextShowTagMenu);
               if (nextShowTagMenu) {
-                setShowRemoveTagMenu(false);
-                setRemoveTagSearchQuery("");
+                setShow移除TagMenu(false);
+                set移除Tag搜索Query("");
                 setShowDueDateInput(false);
                 setDueDate("");
-                setTimeout(() => tagSearchInputRef?.focus(), 0);
+                setTimeout(() => tag搜索InputRef?.focus(), 0);
               } else {
-                setTagSearchQuery("");
+                setTag搜索Query("");
               }
             }}
           >
@@ -152,16 +152,16 @@ export function BulkOperationsToolbar(props) {
           <button
             class="bulk-operations-toolbar__button"
             onClick={() => {
-              const nextShowRemoveTagMenu = !showRemoveTagMenu();
-              setShowRemoveTagMenu(nextShowRemoveTagMenu);
-              if (nextShowRemoveTagMenu) {
+              const nextShow移除TagMenu = !show移除TagMenu();
+              setShow移除TagMenu(nextShow移除TagMenu);
+              if (nextShow移除TagMenu) {
                 setShowTagMenu(false);
-                setTagSearchQuery("");
+                setTag搜索Query("");
                 setShowDueDateInput(false);
                 setDueDate("");
-                setTimeout(() => removeTagSearchInputRef?.focus(), 0);
+                setTimeout(() => removeTag搜索InputRef?.focus(), 0);
               } else {
-                setRemoveTagSearchQuery("");
+                set移除Tag搜索Query("");
               }
             }}
             disabled={!props.tagsOnSelectedCards || props.tagsOnSelectedCards.length === 0}
@@ -176,9 +176,9 @@ export function BulkOperationsToolbar(props) {
               setShowDueDateInput(nextShowDueDate);
               if (nextShowDueDate) {
                 setShowTagMenu(false);
-                setTagSearchQuery("");
-                setShowRemoveTagMenu(false);
-                setRemoveTagSearchQuery("");
+                setTag搜索Query("");
+                setShow移除TagMenu(false);
+                set移除Tag搜索Query("");
                 setTimeout(() => dueDateRef?.focus(), 0);
               } else {
                 setDueDate("");
@@ -190,7 +190,7 @@ export function BulkOperationsToolbar(props) {
 
           <button
             class="bulk-operations-toolbar__button bulk-operations-toolbar__button--danger"
-            onClick={handleDelete}
+            onClick={handle删除}
           >
             {props.t()('bulk.delete')}
           </button>
@@ -210,40 +210,40 @@ export function BulkOperationsToolbar(props) {
           <input
             type="text"
             class="bulk-operations-toolbar__search-input"
-            placeholder={props.t()('bulk.tagSearchPlaceholder')}
-            value={tagSearchQuery()}
-            onInput={(e) => setTagSearchQuery(e.target.value)}
+            placeholder={props.t()('bulk.tag搜索Placeholder')}
+            value={tag搜索Query()}
+            onInput={(e) => setTag搜索Query(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && showCreateOption()) {
-                handleCreateAndAddTag();
+              if (e.key === "Enter" && show创建Option()) {
+                handle创建And添加Tag();
               } else if (e.key === "Escape") {
                 setShowTagMenu(false);
-                setTagSearchQuery("");
+                setTag搜索Query("");
               }
             }}
-            ref={tagSearchInputRef}
+            ref={tag搜索InputRef}
           />
           <div class="bulk-operations-toolbar__dropdown-list">
-            <Show when={showCreateOption()}>
+            <Show when={show创建Option()}>
               <button
                 class="bulk-operations-toolbar__dropdown-item bulk-operations-toolbar__dropdown-item--create"
-                onClick={handleCreateAndAddTag}
+                onClick={handle创建And添加Tag}
               >
                 <span class="bulk-operations-toolbar__create-icon">+</span>
-                {props.t()('bulk.createTag', { tag: tagSearchQuery() })}
+                {props.t()('bulk.createTag', { tag: tag搜索Query() })}
               </button>
             </Show>
             <For each={filteredTags()}>
               {(tag) => (
                 <button
                   class="bulk-operations-toolbar__dropdown-item"
-                  onClick={() => handleAddTag(tag)}
+                  onClick={() => handle添加Tag(tag)}
                 >
                   {tag}
                 </button>
               )}
             </For>
-            <Show when={filteredTags().length === 0 && !showCreateOption()}>
+            <Show when={filteredTags().length === 0 && !show创建Option()}>
               <div class="bulk-operations-toolbar__dropdown-empty">
                 {props.t()('common.noTagsFound')}
               </div>
@@ -252,35 +252,35 @@ export function BulkOperationsToolbar(props) {
         </div>
       </Show>
 
-      <Show when={showRemoveTagMenu()}>
+      <Show when={show移除TagMenu()}>
         <div class="bulk-operations-toolbar__dropdown-backdrop" />
         <div class="bulk-operations-toolbar__dropdown" ref={removeTagDropdownRef}>
           <input
             type="text"
             class="bulk-operations-toolbar__search-input"
             placeholder={props.t()('bulk.removeTagPlaceholder')}
-            value={removeTagSearchQuery()}
-            onInput={(e) => setRemoveTagSearchQuery(e.target.value)}
+            value={removeTag搜索Query()}
+            onInput={(e) => set移除Tag搜索Query(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Escape") {
-                setShowRemoveTagMenu(false);
-                setRemoveTagSearchQuery("");
+                setShow移除TagMenu(false);
+                set移除Tag搜索Query("");
               }
             }}
-            ref={removeTagSearchInputRef}
+            ref={removeTag搜索InputRef}
           />
           <div class="bulk-operations-toolbar__dropdown-list">
-            <For each={filteredRemoveTags()}>
+            <For each={filtered移除Tags()}>
               {(tag) => (
                 <button
                   class="bulk-operations-toolbar__dropdown-item"
-                  onClick={() => handleRemoveTag(tag)}
+                  onClick={() => handle移除Tag(tag)}
                 >
                   {tag}
                 </button>
               )}
             </For>
-            <Show when={filteredRemoveTags().length === 0}>
+            <Show when={filtered移除Tags().length === 0}>
               <div class="bulk-operations-toolbar__dropdown-empty">
                 {props.t()('common.noTagsFound')}
               </div>

@@ -7,9 +7,9 @@ import { createEffect, createMemo, createSignal, onMount, For } from "solid-js";
  * @param {string} props.search
  * @param {string} props.filteredTag
  * @param {string[]} props.tagOptions
- * @param {Function} props.onSearchChange
+ * @param {Function} props.on搜索Change
  * @param {Function} props.onTagChange
- * @param {Function} props.onNewLanBtnClick
+ * @param {Function} props.on新建LanBtnClick
  * @param {Function} props.viewMode
  * @param {Function} props.onViewModeChange
  * @param {boolean} props.selectionMode
@@ -30,7 +30,7 @@ export function Header(props) {
           onChange={props.onTagChange}
           value={props.filteredTag || "none"}
         >
-          <option value="none">{props.t()('header.filterNone')}</option>
+          <option value="none">{props.t()('header.filter否ne')}</option>
           <For each={props.tagOptions}>
             {(tag) => <option value={tag}>{tag}</option>}
           </For>
@@ -44,7 +44,7 @@ export function Header(props) {
       <input
         placeholder={props.t()('header.searchPlaceholder')}
         type="text"
-        onInput={(e) => props.onSearchChange(e.target.value)}
+        onInput={(e) => props.on搜索Change(e.target.value)}
         class="search-input"
       />
       <div class="app-header__group-item">
@@ -57,7 +57,7 @@ export function Header(props) {
           <option value="tags:desc">{props.t()('header.sort.tagsDesc')}</option>
           <option value="due:asc">{props.t()('header.sort.dueAsc')}</option>
           <option value="due:desc">{props.t()('header.sort.dueDesc')}</option>
-          <option value="lastUpdated:desc">{props.t()('header.sort.lastUpdated')}</option>
+          <option value="last更新d:desc">{props.t()('header.sort.last更新d')}</option>
           <option value="createdFirst:asc">{props.t()('header.sort.createdFirst')}</option>
         </select>
       </div>
@@ -75,7 +75,7 @@ export function Header(props) {
       </div>
       <button
         type="button"
-        onClick={props.onNewLaneBtnClick}
+        onClick={props.on新建LaneBtnClick}
         disabled={props.selectionMode}
       >
         {props.t()('header.newLane')}

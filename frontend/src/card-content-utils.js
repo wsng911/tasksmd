@@ -4,30 +4,30 @@
  */
 
 /**
- * Add a tag to card content
+ * 添加 a tag to card content
  * @param {string} content - Current card content
- * @param {string} tagName - Tag name to add
- * @returns {string} Updated content with tag added
+ * @param {string} tag名称 - Tag name to add
+ * @returns {string} 更新d content with tag added
  */
-export function addTagToContent(content, tagName) {
+export function addTagToContent(content, tag名称) {
   const actualContent = content || "";
   const emptyLineIfFirstTag = [...actualContent.matchAll(/\[tag:(.*?)\]/g)]
     .length
     ? ""
     : "\n\n";
-  const newTag = tagName.trim();
+  const newTag = tag名称.trim();
   return `[tag:${newTag}] ${emptyLineIfFirstTag}${actualContent}`;
 }
 
 /**
- * Remove a tag from card content
+ * 移除 a tag from card content
  * @param {string} content - Current card content
- * @param {string} tagName - Tag name to remove
- * @returns {string} Updated content with tag removed
+ * @param {string} tag名称 - Tag name to remove
+ * @returns {string} 更新d content with tag removed
  */
-export function removeTagFromContent(content, tagName) {
+export function removeTagFromContent(content, tag名称) {
   const currentContent = content || "";
-  const tagWithBrackets = `[tag:${tagName}]`;
+  const tagWithBrackets = `[tag:${tag名称}]`;
   const tagWithBracketsAndSpace = `${tagWithBrackets} `;
   let tagLength = tagWithBracketsAndSpace.length;
   let indexOfTag = currentContent
@@ -49,8 +49,8 @@ export function removeTagFromContent(content, tagName) {
 /**
  * Set or update due date in card content
  * @param {string} content - Current card content
- * @param {string} newDueDate - New due date (YYYY-MM-DD format)
- * @returns {string} Updated content with due date set/updated
+ * @param {string} newDueDate - 新建 due date (YYYY-MM-DD format)
+ * @returns {string} 更新d content with due date set/updated
  */
 export function setDueDateInContent(content, newDueDate) {
   const currentContent = content || "";
@@ -65,7 +65,7 @@ export function setDueDateInContent(content, newDueDate) {
     // Replace existing due date
     return currentContent.replace(`[due:${existingDueDate}]`, newDueDateTag);
   } else {
-    // Add new due date at the beginning
+    // 添加 new due date at the beginning
     return `${newDueDateTag}\n\n${currentContent}`;
   }
 }

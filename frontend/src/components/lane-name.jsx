@@ -9,13 +9,13 @@ import { IconPlusSm, IconEllipsisVertical } from '@stackoverflow/stacks-icons/ic
  * @param {string} props.name
  * @param {number} props.count
  * @param {Function} props.onRenameBtnClick
- * @param {Function} props.onDeleteCards
- * @param {Function} props.onDelete
+ * @param {Function} props.on删除Cards
+ * @param {Function} props.on删除
  * @param {Function} props.onDragStart
- * @param {Function} props.onCreateNewCardBtnClick
+ * @param {Function} props.on创建新建CardBtnClick
  * @param {Function} props.t
  */
-export function LaneName(props) {
+export function Lane名称(props) {
 	const [showMenu, setShowMenu] = createSignal(false);
 	const [menuCoordinates, setMenuCoordinates] = createSignal();
 
@@ -24,7 +24,7 @@ export function LaneName(props) {
 		props.onRenameBtnClick();
 	}
 
-	function handleCancel() {
+	function handle取消() {
 		setShowMenu(false);
 		setMenuCoordinates(null);
 	}
@@ -38,16 +38,16 @@ export function LaneName(props) {
 	}
 
 	const menuOptions = createMemo(() => [
-		{ label: props.t()('laneName.rename'), onClick: startRenamingLane },
+		{ label: props.t()('lane名称.rename'), onClick: startRenamingLane },
 		{
-			label: props.t()('laneName.deleteCard'),
-			onClick: props.onDeleteCards,
-			requiresConfirmation: true,
+			label: props.t()('lane名称.deleteCard'),
+			onClick: props.on删除Cards,
+			requires确认ation: true,
 		},
 		{
-			label: props.t()('laneName.deleteLane'),
-			onClick: props.onDelete,
-			requiresConfirmation: true,
+			label: props.t()('lane名称.deleteLane'),
+			onClick: props.on删除,
+			requires确认ation: true,
 		},
 	]);
 
@@ -67,20 +67,20 @@ export function LaneName(props) {
 			<div class="header-buttons">
 				<button
 					type="button"
-					title={props.t()('laneName.createCard')}
+					title={props.t()('lane名称.createCard')}
 					class="small"
-					onClick={() => props.onCreateNewCardBtnClick()}
+					onClick={() => props.on创建新建CardBtnClick()}
 				>
 					<span innerHTML={IconPlusSm} />
 				</button>
 				<button
 					type="button"
-					title={props.t()('laneName.showOptions')}
+					title={props.t()('lane名称.showOptions')}
 					class="small"
 					popoverTarget={`${props.name}-lane-options`}
 					onClick={handleOptionsBtnClick}
 					onKeyDown={(e) =>
-						handleKeyDown(e, () => handleOptionsBtnClick(e, true), handleCancel)
+						handleKeyDown(e, () => handleOptionsBtnClick(e, true), handle取消)
 					}
 				>
 					<span innerHTML={IconEllipsisVertical} />
@@ -92,7 +92,7 @@ export function LaneName(props) {
 						id={`${props.name}-lane-options`}
 						open={showMenu()}
 						options={menuOptions()}
-						onClose={handleCancel}
+						on关闭={handle取消}
 						x={menuCoordinates()?.x}
 						y={menuCoordinates()?.y}
 					/>
