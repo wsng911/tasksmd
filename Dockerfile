@@ -1,35 +1,47 @@
-FROM node:18.20.4-alpine3.20 AS build-stage
-
-RUN apk add git
-RUN set -eux \
-    && mkdir -p /app \
-    && mkdir -p /api
-
-COPY frontend/ /app
-COPY entrypoint.sh /api/entrypoint.sh
+FROM node:18-alpine AS build-stage
 
 WORKDIR /app
-RUN rm -r src/components/Stacks-Editor
-RUN git clone https://github.com/BaldissaraMatheus/Stacks-Editor src/components/Stacks-Editor
-RUN cd src/components/Stacks-Editor && npm ci --no-audit
-RUN set -eux && npm ci --no-audit --omit=dev
 
-COPY backend/ /api/
+RUN apk add --no-cache git && \
+    git config --global user.email "dev@example.com" && \
+    git config --global user.name "dev"
+
+COPY frontend/ ./frontend/
+COPY backend/ ./backend/
+COPY entrypoint.sh ./
+
+RUN git init && git add -A && git commit -m "init" || true
+
+WORKDIR /app/frontend
+
+RUN if [ ! -d "src/components/Stacks-Editor/.git" ]; then \
+      rm -rf src/components/Stacks-Editor && \
+      git clone https://github.com/BaldissaraMatheus/Stacks-Editor src/components/Stacks-Editor; \
+    fi && \
+    cd src/components/Stacks-Editor && npm ci --no-audit
+
+RUN npm ci --no-audit --omit=dev
+
+WORKDIR /app/backend
+RUN npm ci --no-audit
+
+FROM alpine:latest
 
 WORKDIR /api
-RUN set -eux && npm ci --no-audit
 
-FROM alpine:3.20 AS final
-USER root
-RUN set -eux && apk add --no-cache nodejs npm
-RUN mkdir /stylesheets
+RUN apk add --no-cache nodejs npm git && \
+    git config --global user.email "dev@example.com" && \
+    git config --global user.name "dev"
 
-COPY --from=build-stage /app /app
-COPY --from=build-stage /api/ /api/
+COPY --from=build-stage /app/frontend /app
+COPY --from=build-stage /app/backend /api/
+COPY --from=build-stage /app/entrypoint.sh /api/entrypoint.sh
+
+RUN mkdir -p /tasks /config
 
 VOLUME /tasks
 VOLUME /config
-WORKDIR /api
+
 EXPOSE 8080
 
-ENTRYPOINT sh entrypoint.sh
+ENTRYPOINT ["sh", "entrypoint.sh"]
